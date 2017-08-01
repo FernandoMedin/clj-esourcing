@@ -59,6 +59,13 @@
 (defn get-log-info [n]
   (doall (map println (map #(% :msg)(get-log (parse-int n))))))
 
+(defn delete-product [n]
+  (cond
+    (empty? (get-product {:product-desc n}))(println "Couldnt find this product")
+    :else (add-log {:msg "Product deleted successfully."
+                    :type "PRODUCT_DELETE"
+                    :product (get (first (get-product {:product-desc n})) :_id)})))
+
 (defn menu []
   (println "")
   (println "Clojure Event Sourcing Demo. Please, choose an option:")
@@ -93,7 +100,7 @@
     (= (parse-int val) 1)(get-all-products)
     (= (parse-int val) 2)(print-product-list "PRODUCT_ADD")
     (= (parse-int val) 3)(print-product-list "PRODUCT_DELETE")
-    (= (parse-int val) 4)(println "4"))
+    (= (parse-int val) 4)(delete-product (get-input "Type product name: ")))
   (cond
     (= (parse-int val) 5)(println "Returning to menu")
     :else (products-intro (get-input-menu 2))))
