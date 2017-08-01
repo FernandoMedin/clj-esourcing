@@ -1,10 +1,5 @@
 # clj-esourcing
-
-FIXME: description
-
-## Installation
-
-Download from http://example.com/FIXME.
+An example log app using Clojure and event sourcing
 
 ## Usage
 
