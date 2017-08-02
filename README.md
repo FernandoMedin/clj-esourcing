@@ -3,7 +3,10 @@ An example log app using Clojure and event sourcing
 
 ## Usage
 
-    $ lein run
+```shell
+cd clj-esourcing/
+lein run
+```
     
 ## Docker
 
