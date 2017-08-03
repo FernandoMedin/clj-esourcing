@@ -1,7 +1,8 @@
 (ns clj-esourcing.core
   (:gen-class)
   (:require [monger.core :as mg]
-            [monger.collection :as mc]))
+            [monger.collection :as mc]
+            [clj-esourcing.tools :as tools]))
 
 ;; Mongo config
 (def conn (mg/connect))
@@ -10,13 +11,6 @@
 ;; Cols
 (def log-coll "logs")
 (def product-coll "products")
-
-(defn parse-int [x]
-  (Integer. (re-find #"[0-9]*" x)))
-
-(defn get-input [str]
-  (println str)
-  (read-line))
 
 (defn add-log [payload]
   "Payload -> keyword"
@@ -34,8 +28,8 @@
 (defn get-product-info []
   (add-log {:msg "Product add successfully."
             :type "PRODUCT_ADD"
-            :product (add-product {:desc (get-input "Type the product description: ")
-                                   :type (get-input "Type the product type: ")})}))
+            :product (add-product {:desc (tools/get-input "Type the product description: ")
+                                   :type (tools/get-input "Type the product type: ")})}))
 
 (defn get-product [filter]
   (mc/find-maps db product-coll filter))
@@ -57,7 +51,7 @@
   (reverse (take n (reverse (mc/find-maps db log-coll)))))
 
 (defn get-log-info [n]
-  (doall (map println (map #(% :msg)(get-log (parse-int n))))))
+  (doall (map println (map #(% :msg)(get-log (tools/parse-int n))))))
 
 (defn delete-product [n]
   (cond
@@ -97,22 +91,22 @@
 (defn products-intro [val]
   (println "--------------------")
   (cond
-    (= (parse-int val) 1)(get-all-products)
-    (= (parse-int val) 2)(print-product-list "PRODUCT_ADD")
-    (= (parse-int val) 3)(print-product-list "PRODUCT_DELETE")
-    (= (parse-int val) 4)(delete-product (get-input "Type product name: ")))
+    (= (tools/parse-int val) 1)(get-all-products)
+    (= (tools/parse-int val) 2)(print-product-list "PRODUCT_ADD")
+    (= (tools/parse-int val) 3)(print-product-list "PRODUCT_DELETE")
+    (= (tools/parse-int val) 4)(delete-product (tools/get-input "Type product name: ")))
   (cond
-    (= (parse-int val) 5)(println "Returning to menu")
+    (= (tools/parse-int val) 5)(println "Returning to menu")
     :else (products-intro (get-input-menu 2))))
 
 (defn intro [val]
   (println "--------------------")
   (cond
-    (= (parse-int val) 1)(get-product-info)
-    (= (parse-int val) 2)(products-intro (get-input-menu 2))
-    (= (parse-int val) 3)(get-log-info (get-input "Type a log range: ")))
+    (= (tools/parse-int val) 1)(get-product-info)
+    (= (tools/parse-int val) 2)(products-intro (get-input-menu 2))
+    (= (tools/parse-int val) 3)(get-log-info (tools/get-input "Type a log range: ")))
   (cond
-    (= (parse-int val) 4)(println "Bye!")
+    (= (tools/parse-int val) 4)(println "Bye!")
     :else (intro (get-input-menu 1))))
 
 (defn -main
